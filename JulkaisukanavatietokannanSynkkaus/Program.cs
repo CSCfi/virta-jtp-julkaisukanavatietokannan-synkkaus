@@ -88,6 +88,9 @@ namespace JulkaisukanavatietokannanSynkkaus
                     string name_API = stuff[i]["Name"].ToString();
                     string other_Title_API = stuff[i]["Other_Title"].ToString();
                     string publisher_API = stuff[i]["Publisher"].ToString();
+                    // uudet sarakkeet
+                    string OrigName_API = name_API;
+                    string OrigOtherTitle_API = other_Title_API;
 
                     // Muokataan name_APIn ja other_Title_APIn nimea mikali niissa on stop wordseja tai stop charseja
                     if ((name_API != null) && !(name_API.Equals("")))
@@ -104,7 +107,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                     {
                         publisher_API = apufunktiot.muokkaa_nimea(publisher_API, "publisher");
                     }
-
+                    
                     string type_API = stuff[i]["Type"].ToString();
                     string ISSNL_API = stuff[i]["ISSNL"].ToString();
                     string ISSN1_API = stuff[i]["ISSN1"].ToString();
@@ -139,7 +142,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                     if (!channelIsFoundFromVirta)
                     {
                         // Lisataan uusi rivi julkaisut_mds.dbo.Julkaisukanavatietokanta -tauluun
-                        tietokantaoperaatiot.insert_Julkaisukanavatietokanta(server, jufo_ID_API, channel_ID_API, jufo_Luokka_API, name_API, other_Title_API, publisher_API, type_API, ISSNL_API, ISSN1_API, ISSN2_API, ISBN_API, active_API, jufo_History_API, year_End_API_after_check, active_binary_API);
+                        tietokantaoperaatiot.insert_Julkaisukanavatietokanta(server, jufo_ID_API, channel_ID_API, jufo_Luokka_API, name_API, other_Title_API, publisher_API, type_API, ISSNL_API, ISSN1_API, ISSN2_API, ISBN_API, active_API, jufo_History_API, year_End_API_after_check, active_binary_API, OrigName_API, OrigOtherTitle_API);
                     }
 
 
@@ -176,8 +179,9 @@ namespace JulkaisukanavatietokannanSynkkaus
                             string jufo_history = reader["Jufo_History"] == System.DBNull.Value ? null : (string)reader["Jufo_History"];
                             int year_end = (int)reader["Year_End"];
                             int active_binary = (int)reader["Active_binary"];
-
-
+                            //uudet arvot 
+                            string orig_name = reader["Orig_name"] == System.DBNull.Value ? null : (string)reader["Orig_name"];
+                            string orig_other_title = reader["Orig_other_title"] == System.DBNull.Value ? null : (string)reader["Orig_other_title"];
                             // Verrataan sitten rajapinnasta loytyvia arvoja SQL Server:in arvoihin.
                             // Jos loytyy eroavaisuuksia, niin paivitetaan erot SQL Server -kantaan
 
@@ -317,6 +321,31 @@ namespace JulkaisukanavatietokannanSynkkaus
                             if (active_binary != active_binary_API)
                             {
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_active_binary(server, id, active_binary_API);
+                            }
+
+                            //uudet sarakkeet
+                            // case Orig_name 
+                            if ((orig_name == null) && (!OrigName_API.Equals("")))
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_name(server, id, OrigName_API);
+                            }
+                            else if (orig_name != OrigName_API) 
+                            //if ((OrigName != null) && (!OrigName.Equals(OrigName_API)))
+
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_name(server, id, OrigName_API);
+                            }
+                           
+                            // case Orig_other_title 
+                            if ((orig_other_title == null) && (!OrigOtherTitle_API.Equals("")))
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_other_Title(server, id, OrigOtherTitle_API);
+                            }
+                            else if (orig_other_title!= OrigOtherTitle_API) 
+                            //if ((OrigOtherTitle != null) && (!OrigOtherTitle.Equals(OrigOtherTitle_API)))
+
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_other_Title(server, id, OrigOtherTitle_API);
                             }
 
                         }

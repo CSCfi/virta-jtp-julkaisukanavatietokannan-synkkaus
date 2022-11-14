@@ -85,7 +85,7 @@ namespace JulkaisukanavatietokannanSynkkaus
         //
         // Lisataan julkaisut_mds.dbo.Julkaisukanavatietokanta -tauluun uusi rivi, joille annetaan parametrien arvot
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void insert_Julkaisukanavatietokanta(string server, string channelJufoID, string channelChannelID, string channelJufoLuokka, string channelName, string channelOtherTitle, string channelPublisher, string channelType, string channelISSNL, string channelISSN1, string channelISSN2, string channelISBN, string channelActive, string channelJufoHistory, int channelYearEnd, int activeBinary)
+        public void insert_Julkaisukanavatietokanta(string server, string channelJufoID, string channelChannelID, string channelJufoLuokka, string channelName, string channelOtherTitle, string channelPublisher, string channelType, string channelISSNL, string channelISSN1, string channelISSN2, string channelISBN, string channelActive, string channelJufoHistory, int channelYearEnd, int activeBinary, string OrigName, string OrigOtherTitle)
         {
 
             string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
@@ -96,7 +96,7 @@ namespace JulkaisukanavatietokannanSynkkaus
             using (conn)
             {
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO dbo.Julkaisukanavatietokanta (Jufo_ID, Channel_ID, Jufo_Luokka, Name, Other_Title, Publisher, Type, ISSNL, ISSN1, ISSN2, ISBN, Active, Jufo_history, Year_End, Active_binary) VALUES (@Jufo_ID, @Channel_ID, @Jufo_Luokka, @Name, @Other_Title, @Publisher, @Type, @ISSNL, @ISSN1, @ISSN2, @ISBN, @Active, @Jufo_History, @Year_End, @Active_binary)");
+                SqlCommand cmd = new SqlCommand("INSERT INTO dbo.Julkaisukanavatietokanta (Jufo_ID, Channel_ID, Jufo_Luokka, Name, Other_Title, Publisher, Type, ISSNL, ISSN1, ISSN2, ISBN, Active, Jufo_history, Year_End, Active_binary, Orig_name, Orig_other_title) VALUES (@Jufo_ID, @Channel_ID, @Jufo_Luokka, @Name, @Other_Title, @Publisher, @Type, @ISSNL, @ISSN1, @ISSN2, @ISBN, @Active, @Jufo_History, @Year_End, @Active_binary, @Orig_name, @Orig_other_title)");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
 
@@ -211,6 +211,9 @@ namespace JulkaisukanavatietokannanSynkkaus
                 // Active_binary
                 cmd.Parameters.AddWithValue("@Active_binary", activeBinary);
 
+                // Uudet sarakkeet
+                cmd.Parameters.AddWithValue("@Orig_name", OrigName);
+                cmd.Parameters.AddWithValue("@Orig_other_title", OrigOtherTitle);
 
                 cmd.ExecuteNonQuery();
 
@@ -384,6 +387,85 @@ namespace JulkaisukanavatietokannanSynkkaus
                 else
                 {
                     cmd.Parameters.AddWithValue("@Other_Title", channelOtherTitle);
+                }
+
+                cmd.ExecuteNonQuery();
+
+            }
+
+            conn.Close();
+
+        }
+
+        // uudet sarakkeet
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // julkaisut_mds.dbo.Julkaisukanavatietokanta                   
+        //
+        // Paivitetaan Julkaisukanavatietokanta-tauluun OrigName
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        public void update_julkaisukanavatietokanta_Orig_name(string server, int id, string channelOrigName)
+        {
+
+            string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using (conn)
+            {
+
+                SqlCommand cmd = new SqlCommand("UPDATE dbo.Julkaisukanavatietokanta SET Orig_name = @Orig_name WHERE ID = @ID");
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+
+                cmd.Parameters.AddWithValue("@ID", id);
+
+                if (String.IsNullOrEmpty(channelOrigName))
+                {
+                    cmd.Parameters.AddWithValue("@Orig_name", DBNull.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@Orig_name", channelOrigName);
+                }
+
+                cmd.ExecuteNonQuery();
+
+            }
+
+            conn.Close();
+
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // julkaisut_mds.dbo.Julkaisukanavatietokanta                   
+        //
+        // Paivitetaan Julkaisukanavatietokanta-tauluun Orig_Other_Title
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        public void update_julkaisukanavatietokanta_Orig_other_Title(string server, int id, string channelOrigOtherTitle)
+        {
+
+            string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using (conn)
+            {
+
+                SqlCommand cmd = new SqlCommand("UPDATE dbo.Julkaisukanavatietokanta SET Orig_other_title = @Orig_other_title WHERE ID = @ID");
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+
+                cmd.Parameters.AddWithValue("@ID", id);
+
+                if (String.IsNullOrEmpty(channelOrigOtherTitle))
+                {
+                    cmd.Parameters.AddWithValue("@Orig_other_title", DBNull.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@Orig_other_title", channelOrigOtherTitle);
                 }
 
                 cmd.ExecuteNonQuery();
