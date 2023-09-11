@@ -353,14 +353,16 @@ namespace JulkaisukanavatietokannanSynkkaus
                         reader.Close();
                         conn.Close();
 
-
+                        
 
                     }
 
                 }
 
-            }
+                tietokantaoperaatiot.populoi_julkaisukanavatietokanta_jufohistory(server);
 
+            }
+  
             //Console.ReadLine();
             Environment.Exit(0);
 

@@ -864,6 +864,27 @@ namespace JulkaisukanavatietokannanSynkkaus
 
         }
 
+
+        public void populoi_julkaisukanavatietokanta_jufohistory(string server) 
+        {
+            string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using (conn)
+            {
+
+                SqlCommand cmd = new SqlCommand("EXEC [dbo].[Julkaisukanavatietokanta_jufohistory_Paivitys]");
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+
+            }
+
+            conn.Close();
+
+        }
     }
 
 }
