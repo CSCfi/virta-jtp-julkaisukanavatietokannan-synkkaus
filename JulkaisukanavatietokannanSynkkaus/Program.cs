@@ -332,8 +332,6 @@ namespace JulkaisukanavatietokannanSynkkaus
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_name(server, id, OrigName_API);
                             }
                             else if (orig_name != OrigName_API) 
-                            //if ((OrigName != null) && (!OrigName.Equals(OrigName_API)))
-
                             {
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_name(server, id, OrigName_API);
                             }
@@ -344,8 +342,6 @@ namespace JulkaisukanavatietokannanSynkkaus
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_other_Title(server, id, OrigOtherTitle_API);
                             }
                             else if (orig_other_title!= OrigOtherTitle_API) 
-                            //if ((OrigOtherTitle != null) && (!OrigOtherTitle.Equals(OrigOtherTitle_API)))
-
                             {
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_other_Title(server, id, OrigOtherTitle_API);
                             }
@@ -356,8 +352,6 @@ namespace JulkaisukanavatietokannanSynkkaus
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Continued_By(server, id, continued_by_API);
                             }
                             else if (continued_by != continued_by_API)
-                            //if ((OrigOtherTitle != null) && (!OrigOtherTitle.Equals(OrigOtherTitle_API)))
-
                             {
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Continued_By(server, id, continued_by_API);
                             }
@@ -366,9 +360,7 @@ namespace JulkaisukanavatietokannanSynkkaus
 
                         reader.Close();
                         conn.Close();
-
-                        
-
+                       
                     }
 
                 }
