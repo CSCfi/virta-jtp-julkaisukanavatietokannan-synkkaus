@@ -85,7 +85,7 @@ namespace JulkaisukanavatietokannanSynkkaus
         //
         // Lisataan julkaisut_mds.dbo.Julkaisukanavatietokanta -tauluun uusi rivi, joille annetaan parametrien arvot
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        public void insert_Julkaisukanavatietokanta(string server, string channelJufoID, string channelChannelID, string channelJufoLuokka, string channelName, string channelOtherTitle, string channelPublisher, string channelType, string channelISSNL, string channelISSN1, string channelISSN2, string channelISBN, string channelActive, string channelJufoHistory, int channelYearEnd, int activeBinary, string OrigName, string OrigOtherTitle)
+        public void insert_Julkaisukanavatietokanta(string server, string channelJufoID, string channelChannelID, string channelJufoLuokka, string channelName, string channelOtherTitle, string channelPublisher, string channelType, string channelISSNL, string channelISSN1, string channelISSN2, string channelISBN, string channelActive, string channelJufoHistory, int channelYearEnd, int activeBinary, string OrigName, string OrigOtherTitle, string Continued_By)
         {
 
             string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
@@ -96,7 +96,7 @@ namespace JulkaisukanavatietokannanSynkkaus
             using (conn)
             {
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO dbo.Julkaisukanavatietokanta (Jufo_ID, Channel_ID, Jufo_Luokka, Name, Other_Title, Publisher, Type, ISSNL, ISSN1, ISSN2, ISBN, Active, Jufo_history, Year_End, Active_binary, Orig_name, Orig_other_title) VALUES (@Jufo_ID, @Channel_ID, @Jufo_Luokka, @Name, @Other_Title, @Publisher, @Type, @ISSNL, @ISSN1, @ISSN2, @ISBN, @Active, @Jufo_History, @Year_End, @Active_binary, @Orig_name, @Orig_other_title)");
+                SqlCommand cmd = new SqlCommand("INSERT INTO dbo.Julkaisukanavatietokanta (Jufo_ID, Channel_ID, Jufo_Luokka, Name, Other_Title, Publisher, Type, ISSNL, ISSN1, ISSN2, ISBN, Active, Jufo_history, Year_End, Active_binary, Orig_name, Orig_other_title, Continued_by) VALUES (@Jufo_ID, @Channel_ID, @Jufo_Luokka, @Name, @Other_Title, @Publisher, @Type, @ISSNL, @ISSN1, @ISSN2, @ISBN, @Active, @Jufo_History, @Year_End, @Active_binary, @Orig_name, @Orig_other_title, @Continued_By)");
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
 
@@ -204,6 +204,14 @@ namespace JulkaisukanavatietokannanSynkkaus
                 }
                 else
                     cmd.Parameters.AddWithValue("@Jufo_History", channelJufoHistory);
+
+                //Continued_By
+                if (String.IsNullOrEmpty(Continued_By))
+                {
+                    cmd.Parameters.AddWithValue("@Continued_By", DBNull.Value);
+                }
+                else
+                    cmd.Parameters.AddWithValue("@Continued_By", Continued_By);
 
                 // Year_End
                 cmd.Parameters.AddWithValue("@Year_End", channelYearEnd);
@@ -855,6 +863,41 @@ namespace JulkaisukanavatietokannanSynkkaus
                 cmd.Parameters.AddWithValue("@ID", id);
 
                 cmd.Parameters.AddWithValue("@Active_binary", activeBinary);
+
+                cmd.ExecuteNonQuery();
+
+            }
+
+            conn.Close();
+
+        }
+
+
+        public void update_julkaisukanavatietokanta_Continued_By(string server, int id, string ContinuedBy)
+        {
+
+            string connectionString = "Server=" + server + ";Database=julkaisut_mds;Trusted_Connection=true";
+
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using (conn)
+            {
+
+                SqlCommand cmd = new SqlCommand("UPDATE dbo.Julkaisukanavatietokanta SET Continued_By = @ContinuedBy WHERE ID = @ID");
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+
+                cmd.Parameters.AddWithValue("@ID", id);
+
+                if (String.IsNullOrEmpty(ContinuedBy))
+                {
+                    cmd.Parameters.AddWithValue("@ContinuedBy", DBNull.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@ContinuedBy", ContinuedBy);
+                }
 
                 cmd.ExecuteNonQuery();
 

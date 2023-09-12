@@ -115,6 +115,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                     string ISBN_API = stuff[i]["ISBN"].ToString();
                     string active_API = stuff[i]["Active"].ToString();
                     string jufo_History_API = stuff[i]["Jufo_history"].ToString();
+                    string continued_by_API = stuff[i]["Continued_by"].ToString();
                     int active_binary_API = Int32.Parse(stuff[i]["Active_Binary"].ToString());
 
                     // jos jufo_History_API == "", niin asetetaan sille merkkijono
@@ -142,7 +143,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                     if (!channelIsFoundFromVirta)
                     {
                         // Lisataan uusi rivi julkaisut_mds.dbo.Julkaisukanavatietokanta -tauluun
-                        tietokantaoperaatiot.insert_Julkaisukanavatietokanta(server, jufo_ID_API, channel_ID_API, jufo_Luokka_API, name_API, other_Title_API, publisher_API, type_API, ISSNL_API, ISSN1_API, ISSN2_API, ISBN_API, active_API, jufo_History_API, year_End_API_after_check, active_binary_API, OrigName_API, OrigOtherTitle_API);
+                        tietokantaoperaatiot.insert_Julkaisukanavatietokanta(server, jufo_ID_API, channel_ID_API, jufo_Luokka_API, name_API, other_Title_API, publisher_API, type_API, ISSNL_API, ISSN1_API, ISSN2_API, ISBN_API, active_API, jufo_History_API, year_End_API_after_check, active_binary_API, OrigName_API, OrigOtherTitle_API, continued_by_API);
                     }
 
 
@@ -182,6 +183,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                             //uudet arvot 
                             string orig_name = reader["Orig_name"] == System.DBNull.Value ? null : (string)reader["Orig_name"];
                             string orig_other_title = reader["Orig_other_title"] == System.DBNull.Value ? null : (string)reader["Orig_other_title"];
+                            string continued_by = reader["Continued_by"] == System.DBNull.Value ? null : (string)reader["Continued_by"];
                             // Verrataan sitten rajapinnasta loytyvia arvoja SQL Server:in arvoihin.
                             // Jos loytyy eroavaisuuksia, niin paivitetaan erot SQL Server -kantaan
 
@@ -346,6 +348,18 @@ namespace JulkaisukanavatietokannanSynkkaus
 
                             {
                                 tietokantaoperaatiot.update_julkaisukanavatietokanta_Orig_other_Title(server, id, OrigOtherTitle_API);
+                            }
+
+                            // case Continued_By
+                            if ((continued_by == null) && (!continued_by_API.Equals("")))
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Continued_By(server, id, continued_by_API);
+                            }
+                            else if (continued_by != continued_by_API)
+                            //if ((OrigOtherTitle != null) && (!OrigOtherTitle.Equals(OrigOtherTitle_API)))
+
+                            {
+                                tietokantaoperaatiot.update_julkaisukanavatietokanta_Continued_By(server, id, continued_by_API);
                             }
 
                         }
