@@ -127,7 +127,7 @@ namespace JulkaisukanavatietokannanSynkkaus
                 //Name
                 if (String.IsNullOrEmpty(channelName))
                 {
-                    cmd.Parameters.AddWithValue("@Name", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Name", ""); // DBNull.Value);
                 }
                 else
                     cmd.Parameters.AddWithValue("@Name", channelName);
